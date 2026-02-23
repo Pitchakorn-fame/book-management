@@ -49,7 +49,7 @@ export class BookController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.bookService.remove(+id);
+  removeBook(@Param('id', ParseIntPipe) id: number): IBook {
+    return this.bookService.removeBook(String(id));
   }
 }

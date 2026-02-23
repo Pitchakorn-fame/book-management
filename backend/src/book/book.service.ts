@@ -64,7 +64,25 @@ export class BookService {
     return { ...updateBookInfo };
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} book`;
+  removeBook(id: string): IBook {
+    const indexForDelete = this.book.findIndex((book) => book.id === id);
+    if (indexForDelete === -1) {
+      throw new NotFoundException('Book not found');
+    }
+
+    const oldBookInfo = this.book[indexForDelete];
+
+    const updateBookData: IBook[] = [...this.book];
+
+    const deleteBookInfo = {
+      ...oldBookInfo,
+      status: Status.INACTIVE,
+      updated_at: new Date(),
+    };
+
+    updateBookData[indexForDelete] = deleteBookInfo;
+    this.book = updateBookData;
+
+    return { ...deleteBookInfo };
   }
 }
