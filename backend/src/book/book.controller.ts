@@ -12,9 +12,9 @@ import {
   ParseIntPipe,
 } from '@nestjs/common';
 import { BookService } from './book.service';
-import { UpdateBookDto } from './dto/update-book.dto';
 import type { IBook } from './entities/book.entity';
 import { CreateBookDto } from './dto/create-book.dto';
+import { UpdateBookDto } from './dto/update-book.dto';
 
 @Controller('book')
 export class BookController {
@@ -41,8 +41,11 @@ export class BookController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBookDto: UpdateBookDto) {
-    return this.bookService.update(+id, updateBookDto);
+  updateBook(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateBookDto: UpdateBookDto,
+  ): IBook {
+    return this.bookService.updateBook(String(id), updateBookDto);
   }
 
   @Delete(':id')

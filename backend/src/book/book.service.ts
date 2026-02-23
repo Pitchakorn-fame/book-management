@@ -3,8 +3,13 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { UpdateBookDto } from './dto/update-book.dto';
-import { IBook, ICreateBook, Status } from './entities/book.entity';
+
+import {
+  IBook,
+  ICreateBook,
+  Status,
+  TUpdateBook,
+} from './entities/book.entity';
 
 @Injectable()
 export class BookService {
@@ -39,9 +44,24 @@ export class BookService {
     return book;
   }
 
-  update(id: number, updateBookDto: UpdateBookDto) {
-    console.info(updateBookDto);
-    return `This action updates a #${id} book`;
+  updateBook(id: string, updateBook: TUpdateBook): IBook {
+    const indexForUpdate = this.book.findIndex((book) => book.id === id);
+    if (indexForUpdate === -1) throw new NotFoundException('Book not found');
+
+    const oldBookInfo = this.book[indexForUpdate];
+
+    const updateBookData: IBook[] = [...this.book];
+
+    const updateBookInfo = {
+      ...oldBookInfo,
+      ...updateBook,
+      updated_at: new Date(),
+    };
+
+    updateBookData[indexForUpdate] = updateBookInfo;
+    this.book = updateBookData;
+
+    return { ...updateBookInfo };
   }
 
   remove(id: number) {
