@@ -3,8 +3,6 @@ import { forwardRef, InputHTMLAttributes } from "react";
 export type TTextInputFieldProps = InputHTMLAttributes<HTMLInputElement> & {
   id: string;
   label?: string;
-  //   textValue: string;
-  //   onChangeFunction: (value: string) => void;
   placeholder?: string;
   required?: boolean;
   errorMessage?: string;
@@ -41,11 +39,7 @@ const TextInputField = forwardRef<HTMLInputElement, TTextInputFieldProps>(
               disable ? "opacity-50 pointer-events-none" : ""
             }`}
             placeholder={placeholder ?? ""}
-            //   value={props.textValue}
             maxLength={maxLength ?? 100}
-            //   onChange={(e) => {
-            //     props.onChangeFunction(e.target.value);
-            //   }}
             disabled={disable}
           />
           {errorMessage && (

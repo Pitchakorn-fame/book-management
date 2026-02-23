@@ -1,5 +1,3 @@
-import React, { useState } from "react";
-
 import { Icon } from "@iconify/react";
 import { IBook, Status } from "../../constant/book-management";
 import TextInputField from "./form/TextInputField";
@@ -21,16 +19,24 @@ interface IBookFormProps {
 }
 
 const BookForm = (props: IBookFormProps) => {
+  const updateBookInfo = props.updateBookInfo;
   const {
     register,
     formState: { errors },
     handleSubmit,
     setError,
   } = useForm<AddNewBookForm>({
-    defaultValues: ADD_NEW_BOOK_DEFAULT_VALUES,
+    defaultValues: updateBookInfo
+      ? {
+          isbn: updateBookInfo.isbn,
+          category: updateBookInfo.category,
+          title: updateBookInfo.title,
+          author: updateBookInfo.author,
+          qty: String(updateBookInfo.qty),
+        }
+      : ADD_NEW_BOOK_DEFAULT_VALUES,
     resolver: zodResolver(addNewBookFormSchema),
   });
-  const updateBookInfo = props.updateBookInfo;
 
   const onSubmit: SubmitHandler<AddNewBookForm> = (values: AddNewBookForm) => {
     const adjustNewBookData: IBook = {
@@ -38,7 +44,7 @@ const BookForm = (props: IBookFormProps) => {
       category: values.category,
       title: values.title,
       author: values.author,
-      qty: values.qty,
+      qty: Number(values.qty),
       status: Status.ACTIVE,
     };
 
@@ -78,8 +84,6 @@ const BookForm = (props: IBookFormProps) => {
         id="isbn"
         {...register("isbn")}
         label="ISBN"
-        // textValue={isbnValue}
-        // onChangeFunction={(value) => setIsbnValue(value)}
         placeholder="Enter ISBN e.g. 8503957483002"
         maxLength={13}
         required
@@ -129,7 +133,7 @@ const BookForm = (props: IBookFormProps) => {
           type="submit"
           className="bg-[#FF7F50] text-white p-2 rounded-2xl w-25 cursor-pointer h-fit"
         >
-          Create
+          {!!updateBookInfo ? "Update" : "Create"}
         </button>
       </div>
     </form>
