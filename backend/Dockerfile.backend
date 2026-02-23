@@ -1,0 +1,11 @@
+FROM node:latest AS build-stage
+
+COPY package.json package-lock.json* ./
+
+RUN npm ci
+
+WORKDIR /app
+
+COPY . .
+
+RUN npm run build
