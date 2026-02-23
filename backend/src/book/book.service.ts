@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { UpdateBookDto } from './dto/update-book.dto';
 import { IBook, ICreateBook, Status } from './entities/book.entity';
 
@@ -25,12 +29,14 @@ export class BookService {
     return adjustNewBook;
   }
 
-  findAll() {
-    return `This action returns all book`;
+  getBooks(): { data: IBook[] } {
+    return { data: [...this.book] };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} book`;
+  getBookById(id: string): IBook | null {
+    const book = this.book.find((book) => book.id === id);
+    if (!book) throw new NotFoundException('Book not found');
+    return book;
   }
 
   update(id: number, updateBookDto: UpdateBookDto) {

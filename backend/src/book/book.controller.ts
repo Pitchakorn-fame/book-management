@@ -8,6 +8,8 @@ import {
   Delete,
   HttpStatus,
   HttpCode,
+  NotFoundException,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { BookService } from './book.service';
 import { UpdateBookDto } from './dto/update-book.dto';
@@ -25,13 +27,17 @@ export class BookController {
   }
 
   @Get()
-  findAll() {
-    return this.bookService.findAll();
+  getBooks(): { data: IBook[] } {
+    return this.bookService.getBooks();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.bookService.findOne(+id);
+  getBookById(@Param('id', ParseIntPipe) id: number): IBook {
+    const book = this.bookService.getBookById(String(id));
+    if (!book) {
+      throw new NotFoundException('Book not found');
+    }
+    return book;
   }
 
   @Patch(':id')
